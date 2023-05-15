@@ -18,10 +18,7 @@ public class User {
     private String email;
 
     @OneToMany(mappedBy = "user")
-    private Set<Order> orders = new HashSet<>();
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Cart cart;
+    private Set<CustomerOrder> orders = new HashSet<>();
 
     // getters and setters
 }

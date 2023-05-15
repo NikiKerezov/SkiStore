@@ -13,10 +13,6 @@ public class Cart {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long cartId;
 
-    @OneToOne
-    @JoinColumn(name = "userId")
-    private User user;
-
     @ManyToMany
     @JoinTable(
             name = "cart_product",

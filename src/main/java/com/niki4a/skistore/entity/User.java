@@ -1,0 +1,27 @@
+package com.niki4a.skistore.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Data
+public class User {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long userId;
+
+    private String username;
+    private String password;
+    private String email;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Order> orders = new HashSet<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+
+    // getters and setters
+}

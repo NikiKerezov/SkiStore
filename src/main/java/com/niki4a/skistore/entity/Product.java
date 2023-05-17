@@ -20,7 +20,7 @@ public class Product {
     @JoinColumn(name = "categoryId")
     private Category category;
 
-    @ManyToMany
+   @ManyToMany
     @JoinTable(
             name = "product_tag",
             joinColumns = @JoinColumn(name = "productId"),

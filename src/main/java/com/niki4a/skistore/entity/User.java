@@ -16,6 +16,8 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String address;
+    private String corporationName;
 
     @OneToMany(mappedBy = "user")
     private Set<CustomerOrder> orders = new HashSet<>();

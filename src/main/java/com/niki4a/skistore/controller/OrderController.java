@@ -19,12 +19,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findAll());
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.findById(id));
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody OrderResource orderResource) {
         OrderResource newCustomerOrder = orderService.save(orderResource);
 
@@ -35,12 +35,12 @@ public class OrderController {
         ).body(newCustomerOrder);
     }
 
-    @GetMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody OrderResource orderResource, @PathVariable Long id) {
         return ResponseEntity.ok(orderService.update(orderResource, id));
     }
 
-    @GetMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         orderService.delete(id);
         return ResponseEntity.noContent().build();

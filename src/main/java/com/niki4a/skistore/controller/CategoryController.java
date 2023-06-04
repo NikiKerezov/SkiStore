@@ -18,12 +18,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findAll());
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody CategoryResource categoryResource) {
         CategoryResource newCategoryResource = categoryService.save(categoryResource);
 
@@ -34,12 +34,12 @@ public class CategoryController {
         ).body(newCategoryResource);
     }
 
-    @GetMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody CategoryResource categoryResource, @PathVariable Long id) {
         return ResponseEntity.ok(categoryService.update(categoryResource, id));
     }
 
-    @GetMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();

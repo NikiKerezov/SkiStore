@@ -18,12 +18,12 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll());
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody UserResource userResource) {
         UserResource newUserResource = userService.save(userResource);
 
@@ -34,12 +34,12 @@ public class UserController {
         ).body(newUserResource);
     }
 
-    @GetMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody UserResource userResource, @PathVariable Long id) {
         return ResponseEntity.ok(userService.update(userResource, id));
     }
 
-    @GetMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();

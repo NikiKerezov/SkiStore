@@ -18,12 +18,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAll());
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody ProductResource productResource) {
         ProductResource newProductResource = productService.save(productResource);
 
@@ -34,12 +34,12 @@ public class ProductController {
         ).body(newProductResource);
     }
 
-    @GetMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody ProductResource productResource, @PathVariable Long id) {
         return ResponseEntity.ok(productService.update(productResource, id));
     }
 
-    @GetMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();

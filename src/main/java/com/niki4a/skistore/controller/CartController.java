@@ -18,12 +18,12 @@ public class CartController {
         return ResponseEntity.ok(cartService.findAll());
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(cartService.findById(id));
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody CartResource cartResource) {
         CartResource newCartResource = cartService.save(cartResource);
 

@@ -19,12 +19,12 @@ public class TagController {
         return ResponseEntity.ok(tagService.findAll());
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tagService.findById(id));
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody TagResource tagResource) {
         TagResource newTagResource = tagService.save(tagResource);
 
@@ -35,12 +35,12 @@ public class TagController {
         ).body(newTagResource);
     }
 
-    @GetMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody TagResource tagResource, @PathVariable Long id) {
         return ResponseEntity.ok(tagService.update(tagResource, id));
     }
 
-    @GetMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         tagService.delete(id);
         return ResponseEntity.noContent().build();

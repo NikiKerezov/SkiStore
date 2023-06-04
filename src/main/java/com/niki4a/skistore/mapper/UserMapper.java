@@ -12,6 +12,6 @@ public interface UserMapper {
 
     UserResource toUserResource(User user);
     User fromUserResource(UserResource userResource);
-    List<UserResource> toUserResourceList(List<User> userList);
-    List<User> fromUserResourceList(List<UserResource> userResourceList);
+    List<UserResource> toUserResourceList(List<User> usersList);
+    List<User> fromUserResourceList(List<UserResource> userList);
 }

@@ -10,9 +10,9 @@ import java.util.List;
 public interface OrderMapper {
     OrderMapper ORDER_MAPPER = org.mapstruct.factory.Mappers.getMapper(OrderMapper.class);
 
-    OrderResource toOrderResource(CustomerOrder order);
-    CustomerOrder fromOrderResource(OrderResource orderResource);
+    CustomerOrder toCustomerOrder(OrderResource orderResource);
+    OrderResource fromCustomerOrder(CustomerOrder customerOrder);
 
-    List<OrderResource> toOrderResourceList(List<CustomerOrder> orderList);
-    List<CustomerOrder> fromOrderResourceList(List<OrderResource> orderResourceList);
+    List<CustomerOrder> toCustomerOrderList(List<OrderResource> orderResourceList);
+    List<OrderResource> fromCustomerOrderList(List<CustomerOrder> customerOrderList);
 }

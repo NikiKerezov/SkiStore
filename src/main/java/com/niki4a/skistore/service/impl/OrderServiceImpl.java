@@ -19,18 +19,18 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     @Override
     public List<OrderResource> findAll() {
-        return ORDER_MAPPER.toOrderResourceList(orderRepository.findAll());
+        return ORDER_MAPPER.fromCustomerOrderList(orderRepository.findAll());
     }
 
     @Override
     public OrderResource findById(Long id) {
-        return ORDER_MAPPER.toOrderResource(orderRepository.findByOrderId(id));
+        return ORDER_MAPPER.fromCustomerOrder(orderRepository.findByOrderId(id));
     }
 
     @Override
     public OrderResource save(OrderResource orderResource) {
-        CustomerOrder order = ORDER_MAPPER.fromOrderResource(orderResource);
-        return ORDER_MAPPER.toOrderResource(orderRepository.save(order));
+        CustomerOrder order = ORDER_MAPPER.toCustomerOrder(orderResource);
+        return ORDER_MAPPER.fromCustomerOrder(orderRepository.save(order));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(orderResource.getOrderDate());
         order.setUser(USER_MAPPER.fromUserResource(orderResource.getUser()));
         order.setCart(CART_MAPPER.fromCartResource(orderResource.getCart()));
-        return ORDER_MAPPER.toOrderResource(orderRepository.save(order));
+        return ORDER_MAPPER.fromCustomerOrder(orderRepository.save(order));
     }
 
     @Override

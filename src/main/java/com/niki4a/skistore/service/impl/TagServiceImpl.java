@@ -26,7 +26,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagResource update(TagResource tagResource) {
+    public TagResource update(TagResource tagResource, Long id) {
         return null;
     }
 

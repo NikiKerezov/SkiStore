@@ -8,6 +8,6 @@ public interface UserService {
     List<UserResource> findAll();
     UserResource findById(Long id);
     UserResource save(UserResource userResource);
-    UserResource update(UserResource userResource);
+    UserResource update(UserResource userResource, Long id);
     void delete(Long id);
 }

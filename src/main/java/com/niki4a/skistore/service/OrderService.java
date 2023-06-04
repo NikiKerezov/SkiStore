@@ -8,6 +8,6 @@ public interface OrderService {
     List<OrderResource> findAll();
     OrderResource findById(Long id);
     OrderResource save(OrderResource orderResource);
-    OrderResource update(OrderResource orderResource);
+    OrderResource update(OrderResource orderResource, Long id);
     void delete(Long id);
 }

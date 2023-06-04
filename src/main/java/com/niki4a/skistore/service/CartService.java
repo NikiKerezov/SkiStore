@@ -8,6 +8,6 @@ public interface CartService {
     List<CartResource> findAll();
     CartResource findById(Long id);
     CartResource save(CartResource cartResource);
-    CartResource update(CartResource cartResource);
+    CartResource update(CartResource cartResource, Long id);
     void delete(Long id);
 }

@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResource update(UserResource userResource) {
+    public UserResource update(UserResource userResource, Long id) {
         return null;
     }
 

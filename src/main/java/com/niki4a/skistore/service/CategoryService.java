@@ -8,6 +8,6 @@ public interface CategoryService {
     List<CategoryResource> findAll();
     CategoryResource findById(Long id);
     CategoryResource save(CategoryResource categoryResource);
-    CategoryResource update(CategoryResource categoryResource);
+    CategoryResource update(CategoryResource categoryResource, Long id);
     void delete(Long id);
 }

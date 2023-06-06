@@ -7,11 +7,13 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(uses = {ProductMapper.class})
+@Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface CartMapper {
     CartMapper CART_MAPPER = Mappers.getMapper(CartMapper.class);
+
     Cart fromCartResource(CartResource cartResource);
     CartResource toCartResource(Cart cart);
+
     List<Cart> fromCartResourceList(List<CartResource> cartResourceList);
     List<CartResource> toCartResourceList(List<Cart> cartList);
 }

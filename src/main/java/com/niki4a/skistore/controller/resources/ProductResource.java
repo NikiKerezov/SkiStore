@@ -12,6 +12,6 @@ public class ProductResource {
     private String description;
     private double price;
     private int quantityInStock;
-    private CategoryResource category;
-    private Set<TagResource> tags = new HashSet<>();
+    private String category;
+    private Set<String> tags = new HashSet<>();
 }

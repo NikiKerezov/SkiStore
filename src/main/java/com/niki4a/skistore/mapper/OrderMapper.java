@@ -12,10 +12,13 @@ import java.util.List;
 public interface OrderMapper {
     OrderMapper ORDER_MAPPER = org.mapstruct.factory.Mappers.getMapper(OrderMapper.class);
 
-    //@Mapping(target = "user", qualifiedByName = "toUserResourceWithoutOrders")
+    @Mapping(source = "orderResource.user", target = "user.username")
     CustomerOrder toCustomerOrder(OrderResource orderResource);
+
+    @Mapping(source = "customerOrder.user.username", target = "user")
     OrderResource fromCustomerOrder(CustomerOrder customerOrder);
 
     List<CustomerOrder> toCustomerOrderList(List<OrderResource> orderResourceList);
+
     List<OrderResource> fromCustomerOrderList(List<CustomerOrder> customerOrderList);
 }

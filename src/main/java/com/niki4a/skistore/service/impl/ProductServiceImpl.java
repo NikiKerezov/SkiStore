@@ -2,6 +2,7 @@ package com.niki4a.skistore.service.impl;
 
 import com.niki4a.skistore.controller.resources.ProductResource;
 import com.niki4a.skistore.controller.resources.TagResource;
+import com.niki4a.skistore.entity.Category;
 import com.niki4a.skistore.entity.Product;
 import com.niki4a.skistore.entity.Tag;
 import com.niki4a.skistore.repository.ProductRepository;
@@ -44,10 +45,22 @@ public class ProductServiceImpl implements ProductService {
         product.setProductName(productResource.getProductName());
         product.setDescription(productResource.getDescription());
         product.setPrice(productResource.getPrice());
-        product.setCategory(CATEGORY_MAPPER.fromCategoryResource(productResource.getCategory()));
+        product.setCategory(new Category() {
+            {
+                setCategoryName(productResource.getCategory());
+                setProducts(null);
+                setCategoryId(null);
+            }
+        });
         Set<Tag> tagList = new HashSet<>();
-        for (TagResource tag : productResource.getTags()) {
-            tagList.add(TAG_MAPPER.fromTagResource(tag));
+        for (String tag : productResource.getTags()) {
+            tagList.add(new Tag() {
+                {
+                    setTagName(tag);
+                    setProducts(null);
+                    setTagId(null);
+                }
+            });
         }
         product.setTags(tagList);
         return PRODUCT_MAPPER.toProductResource(productRepository.save(product));

@@ -8,6 +8,6 @@ import java.util.Date;
 public class OrderResource {
     private Long orderId;
     private CartResource cart;
-    private UserResource user;
+    private String user;
     private Date orderDate;
 }

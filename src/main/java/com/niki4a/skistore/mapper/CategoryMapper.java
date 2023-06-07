@@ -12,10 +12,8 @@ import java.util.List;
 public interface CategoryMapper {
     CategoryMapper CATEGORY_MAPPER = Mappers.getMapper(CategoryMapper.class);
 
-    //@Mapping(target = "products", qualifiedByName = "toProductResourceWithoutCategory")
     Category fromCategoryResource(CategoryResource categoryResource);
 
-   // @Mapping(target = "products", qualifiedByName = "toProductWithoutCategory")
     CategoryResource toCategoryResource(Category category);
 
     List <CategoryResource> toCategoryResourceList(List<Category> categoryList);

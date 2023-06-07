@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {OrderMapper.class})
 public interface UserMapper {
     UserMapper USER_MAPPER = Mappers.getMapper(UserMapper.class);
 
@@ -18,13 +18,5 @@ public interface UserMapper {
 
     List<UserResource> toUserResourceList(List<User> userList);
     List<User> fromUserResourceList(List<UserResource> userList);
-
-/*
-
-    @Named("toUserResourceWithoutOrders")
-    @Mapping(target = "orders", ignore = true)
-    UserResource toUserResourceWithoutOrders(User user);
-
- */
 }
 

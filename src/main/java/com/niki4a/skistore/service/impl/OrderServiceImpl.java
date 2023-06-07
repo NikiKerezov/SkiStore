@@ -2,6 +2,7 @@ package com.niki4a.skistore.service.impl;
 
 import com.niki4a.skistore.controller.resources.OrderResource;
 import com.niki4a.skistore.entity.CustomerOrder;
+import com.niki4a.skistore.entity.User;
 import com.niki4a.skistore.repository.OrderRepository;
 import com.niki4a.skistore.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,11 @@ public class OrderServiceImpl implements OrderService {
     public OrderResource update(OrderResource orderResource, Long id) {
         CustomerOrder order = orderRepository.findByOrderId(id);
         order.setOrderDate(orderResource.getOrderDate());
-        order.setUser(USER_MAPPER.fromUserResource(orderResource.getUser()));
+        order.setUser(new User() {
+            {
+                setUsername(orderResource.getUser());
+            }
+        });
         order.setCart(CART_MAPPER.fromCartResource(orderResource.getCart()));
         return ORDER_MAPPER.fromCustomerOrder(orderRepository.save(order));
     }

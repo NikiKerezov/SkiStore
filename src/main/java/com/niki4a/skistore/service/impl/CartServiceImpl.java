@@ -41,6 +41,10 @@ public class CartServiceImpl implements CartService {
     public CartResource save(CartResource cartResource) {
         Cart cart = CART_MAPPER.fromCartResource(cartResource);
 
+        if (cartResource.getProducts() == null) {
+            cart.setProducts(new HashSet<>());
+        }
+
         for (ProductResource product : cartResource.getProducts()) {
             productRepository.findByProductName(product.getProductName()).ifPresentOrElse(
                     cart::addProduct,
@@ -70,6 +74,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         cartRepository.deleteByCartId(id);
     }

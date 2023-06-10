@@ -43,23 +43,33 @@ public class ProductServiceImpl implements ProductService {
     public ProductResource save(ProductResource productResource) {
         Product product = PRODUCT_MAPPER.fromProductResource(productResource);
 
+        if (productResource.getTags() == null) {
+            product.setTags(new HashSet<>());
+        }
+
         for (String tag : productResource.getTags()) {
             tagRepository.findByTagName(tag).ifPresentOrElse(
-                    product::addTag,
+                    tagEntity -> {
+                        product.addTag(tagEntity);
+                        tagEntity.addProduct(product);
+                    },
                     () -> {
                         throw new IllegalArgumentException("Tag not found");
                     });
         }
 
         categoryRepository.findByCategoryName(productResource.getCategory()).ifPresentOrElse(
-                product::setCategory,
+                category -> {
+                    product.setCategory(category);
+                    category.addProduct(product);
+                },
                 () -> {
                     throw new IllegalArgumentException("Category not found");
                 });
 
-        categoryRepository.findByCategoryName(productResource.getCategory()).get().addProduct(product);
         return PRODUCT_MAPPER.toProductResource(productRepository.save(product));
     }
+
 
     @Override
     public ProductResource update(ProductResource productResource, Long id) {

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,13 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResource save(UserResource userResource) {
         User user = USER_MAPPER.fromUserResource(userResource);
-        for (OrderResource orderResource : userResource.getOrders()) {
-            orderRepository.findByUserUsername(userResource.getUsername()).ifPresentOrElse(
-                    user::addOrder,
-                    () -> {
-                        throw new IllegalArgumentException("Order not found");
-                    });
-        }
+        user.setOrders(null);
         return USER_MAPPER.toUserResource(userRepository.save(user));
     }
 // private String username;
@@ -59,6 +54,10 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userResource.getEmail());
         user.setAddress(userResource.getAddress());
         user.setCorporationName(userResource.getCorporationName());
+
+        if (userResource.getOrders() == null) {
+            user.setOrders(new HashSet<>());
+        }
 
         for (OrderResource orderResource : userResource.getOrders()) {
             orderRepository.findByUserUsername(userResource.getUsername()).ifPresentOrElse(

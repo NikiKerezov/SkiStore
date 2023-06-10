@@ -36,8 +36,10 @@ public class Product {
     private Set<Tag> tags;
 
     public void addTag(Tag tag) {
-        tags.add(tag);
+        this.tags.add(tag);
+        tag.getProducts().add(this);
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -51,6 +53,12 @@ public class Product {
     public int hashCode() {
         return Objects.hash(productId);
     }
+
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+        tag.getProducts().remove(this);
+    }
+
 
     // getters and setters
 }

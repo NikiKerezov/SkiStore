@@ -39,6 +39,20 @@ public class OrderServiceImpl implements OrderService {
     public OrderResource save(OrderResource orderResource) {
         CustomerOrder order = ORDER_MAPPER.toCustomerOrder(orderResource);
 
+        cartRepository.findById(orderResource.getCart().getCartId()).ifPresentOrElse(
+                order::setCart,
+                () -> {
+                    throw new IllegalArgumentException("Cart not found");
+                });
+
+        userRepository.findByUsername(orderResource.getUser()).ifPresentOrElse(
+                order::setUser,
+                () -> {
+                    throw new IllegalArgumentException("User not found");
+                });
+
+        userRepository.findByUsername(orderResource.getUser()).get().getOrders().add(order);
+
         return ORDER_MAPPER.fromCustomerOrder(orderRepository.save(order));
     }
 

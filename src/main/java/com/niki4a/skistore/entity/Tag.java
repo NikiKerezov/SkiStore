@@ -25,8 +25,12 @@ public class Tag {
     private Set<Product> products;
 
     public void addProduct(Product product) {
-        products.add(product);
+        this.products.add(product);
+        product.getTags().add(this);
     }
+
+
+
 
     // getters and setters
 }

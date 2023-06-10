@@ -4,22 +4,27 @@ import com.niki4a.skistore.controller.resources.CategoryResource;
 import com.niki4a.skistore.controller.resources.ProductResource;
 import com.niki4a.skistore.entity.Category;
 import com.niki4a.skistore.entity.Product;
+import com.niki4a.skistore.mapper.CategoryMapper;
 import com.niki4a.skistore.repository.CategoryRepository;
+import com.niki4a.skistore.repository.ProductRepository;
 import com.niki4a.skistore.service.CategoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static com.niki4a.skistore.mapper.CategoryMapper.CATEGORY_MAPPER;
-import static com.niki4a.skistore.mapper.ProductMapper.PRODUCT_MAPPER;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+
+    @Autowired
+    private final CategoryMapper CATEGORY_MAPPER;
+
     @Override
     public List<CategoryResource> findAll() {
         return CATEGORY_MAPPER.toCategoryResourceList(categoryRepository.findAll());
@@ -33,6 +38,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResource save(CategoryResource categoryResource) {
         Category category = CATEGORY_MAPPER.fromCategoryResource(categoryResource);
+
+        if (categoryRepository.findByCategoryName(categoryResource.getCategoryName()).isPresent()) {
+            throw new IllegalArgumentException("Category already exists");
+        }
+
+        category.setProducts(null);
         return CATEGORY_MAPPER.toCategoryResource(categoryRepository.save(category));
     }
 
@@ -42,13 +53,23 @@ public class CategoryServiceImpl implements CategoryService {
         category.setCategoryName(categoryResource.getCategoryName());
         Set<Product> productList = new HashSet<>();
         for (ProductResource product : categoryResource.getProducts()) {
-            productList.add(PRODUCT_MAPPER.fromProductResource(product));
+            productRepository.findByProductName(product.getProductName()).ifPresentOrElse(
+                    category::addProduct,
+                    () -> {
+                        throw new IllegalArgumentException("Product not found");
+                    });
         }
         return CATEGORY_MAPPER.toCategoryResource(categoryRepository.save(category));
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         categoryRepository.deleteByCategoryId(id);
+    }
+
+    @Override
+    public Optional<CategoryResource> findByCategoryName(String categoryName) {
+        return Optional.ofNullable(CATEGORY_MAPPER.toCategoryResource(categoryRepository.findByCategoryName(categoryName).get()));
     }
 }

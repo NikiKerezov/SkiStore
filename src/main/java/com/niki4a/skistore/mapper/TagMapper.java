@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface TagMapper {
-    TagMapper TAG_MAPPER = org.mapstruct.factory.Mappers.getMapper(TagMapper.class);
+   // TagMapper TAG_MAPPER = org.mapstruct.factory.Mappers.getMapper(TagMapper.class);
 
     TagResource toTagResource(Tag tag);
 
@@ -20,26 +20,4 @@ public interface TagMapper {
 
     List<TagResource> toTagResourceList(List<Tag> tagList);
     List<Tag> fromTagResourceList(List<TagResource> tagResourceList);
-
-    default Tag fromString(String tag) {
-        Tag tagEntity = new Tag();
-        tagEntity.setTagName(tag);
-        return tagEntity;
-    }
-
-    default Set<Tag> fromStringSet(Set<String> tagList) {
-        Set<Tag> tags = new HashSet<>();
-        for (String tag : tagList) {
-            tags.add(fromString(tag));
-        }
-        return tags;
-    }
-
-    default Set<String> toStringSet(Set<Tag> tagList) {
-        Set<String> tags = new HashSet<>();
-        for (Tag tag : tagList) {
-            tags.add(tag.getTagName());
-        }
-        return tags;
-    }
 }

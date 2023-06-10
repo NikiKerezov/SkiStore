@@ -1,5 +1,6 @@
 package com.niki4a.skistore.entity;
 
+import com.niki4a.skistore.controller.resources.OrderResource;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,7 +21,11 @@ public class User {
     private String corporationName;
 
     @OneToMany(mappedBy = "user")
-    private Set<CustomerOrder> orders = new HashSet<>();
+    private Set<CustomerOrder> orders;
+
+    public void addOrder(CustomerOrder order) {
+        orders.add(order);
+    }
 
     // getters and setters
 }

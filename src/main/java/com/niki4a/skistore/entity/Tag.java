@@ -1,5 +1,6 @@
 package com.niki4a.skistore.entity;
 
+import com.niki4a.skistore.controller.resources.ProductResource;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,8 +16,17 @@ public class Tag {
 
     private String tagName;
 
-    @ManyToMany(mappedBy = "tags")
-    private Set<Product> products = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "tags")
+    private Set<Product> products;
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
 
     // getters and setters
 }

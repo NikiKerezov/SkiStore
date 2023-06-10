@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {OrderMapper.class})
 public interface UserMapper {
-    UserMapper USER_MAPPER = Mappers.getMapper(UserMapper.class);
+   // UserMapper USER_MAPPER = Mappers.getMapper(UserMapper.class);
 
     UserResource toUserResource(User user);
     User fromUserResource(UserResource userResource);

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class, ProductMapper.class})
 public interface OrderMapper {
-    OrderMapper ORDER_MAPPER = org.mapstruct.factory.Mappers.getMapper(OrderMapper.class);
+   // OrderMapper ORDER_MAPPER = org.mapstruct.factory.Mappers.getMapper(OrderMapper.class);
 
     @Mapping(source = "orderResource.user", target = "user.username")
     CustomerOrder toCustomerOrder(OrderResource orderResource);

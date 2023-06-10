@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface CartMapper {
-    CartMapper CART_MAPPER = Mappers.getMapper(CartMapper.class);
+  //  CartMapper CART_MAPPER = Mappers.getMapper(CartMapper.class);
 
     Cart fromCartResource(CartResource cartResource);
     CartResource toCartResource(Cart cart);

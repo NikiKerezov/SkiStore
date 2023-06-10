@@ -8,6 +8,6 @@ import java.util.Set;
 @Data
 public class CartResource {
     private Long cartId;
-    private Set<ProductResource> products = new HashSet<>();
+    private Set<ProductResource> products;
     private double totalAmount;
 }

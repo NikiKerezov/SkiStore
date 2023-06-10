@@ -13,5 +13,5 @@ public class UserResource {
     private String email;
     private String address;
     private String corporationName;
-    private Set<OrderResource> orders = new HashSet<>();
+    private Set<OrderResource> orders;
 }

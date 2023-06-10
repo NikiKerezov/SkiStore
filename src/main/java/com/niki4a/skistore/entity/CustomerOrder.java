@@ -1,5 +1,7 @@
 package com.niki4a.skistore.entity;
 
+import com.niki4a.skistore.controller.resources.CartResource;
+import com.niki4a.skistore.controller.resources.UserResource;
 import jakarta.persistence.*;
 import lombok.Data;
 

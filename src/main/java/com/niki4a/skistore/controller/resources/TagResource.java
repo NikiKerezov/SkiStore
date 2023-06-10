@@ -9,5 +9,5 @@ import java.util.Set;
 public class TagResource {
     private Long tagId;
     private String tagName;
-    private Set<ProductResource> products = new HashSet<>();
+    private Set<ProductResource> products;
 }

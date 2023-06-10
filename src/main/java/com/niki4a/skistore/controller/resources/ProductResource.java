@@ -13,5 +13,5 @@ public class ProductResource {
     private double price;
     private int quantityInStock;
     private String category;
-    private Set<String> tags = new HashSet<>();
+    private Set<String> tags;
 }

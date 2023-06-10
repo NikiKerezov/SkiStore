@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface CategoryMapper {
-    CategoryMapper CATEGORY_MAPPER = Mappers.getMapper(CategoryMapper.class);
+  //  CategoryMapper CATEGORY_MAPPER = Mappers.getMapper(CategoryMapper.class);
 
     Category fromCategoryResource(CategoryResource categoryResource);
 

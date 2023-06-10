@@ -9,5 +9,5 @@ import java.util.Set;
 public class CategoryResource {
     private Long categoryId;
     private String categoryName;
-    private Set<ProductResource> products = new HashSet<>();
+    private Set<ProductResource> products;
 }

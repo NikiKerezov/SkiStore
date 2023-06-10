@@ -13,12 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {CategoryMapper.class, TagMapper.class})
+@Mapper(componentModel = "spring", uses = {CategoryMapper.class, TagStringMapper.class})
 public interface ProductMapper {
-    ProductMapper PRODUCT_MAPPER = org.mapstruct.factory.Mappers.getMapper(ProductMapper.class);
+    //ProductMapper PRODUCT_MAPPER = org.mapstruct.factory.Mappers.getMapper(ProductMapper.class);
 
     @Mapping(source = "category", target = "category.categoryName")
-    @Mapping(source = "tags", target = "tags.tagName")
+    @Mapping(source = "tags", target = "tags")
     Product fromProductResource(ProductResource productResource);
 
     @Mapping(source = "category.categoryName", target = "category")
@@ -28,5 +28,7 @@ public interface ProductMapper {
     List<ProductResource> toProductResourceList(List<Product> productList);
 
     List<Product> fromProductResourceList(List<ProductResource> productResourceList);
+
+
 
 }

@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
         User user = userRepository.findByUserId(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        user.getOrders().forEach(order -> order.setUser(null));
+        orderRepository.deleteAll(user.getOrders());
         user.setOrders(new HashSet<>());
         userRepository.delete(user);
     }

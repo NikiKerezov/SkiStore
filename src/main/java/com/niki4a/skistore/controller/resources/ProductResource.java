@@ -14,4 +14,11 @@ public class ProductResource {
     private int quantityInStock;
     private String category;
     private Set<String> tags;
+
+    public Set<String> getTags() {
+        if (tags == null) {
+            tags = new HashSet<>();
+        }
+        return tags;
+    }
 }

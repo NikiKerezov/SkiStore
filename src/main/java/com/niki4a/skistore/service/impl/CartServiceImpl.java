@@ -49,6 +49,14 @@ public class CartServiceImpl implements CartService {
             cart.addProduct(existingProduct);
         }
 
+        double totalAmount = 0;
+
+        for (Product product : cart.getProducts()) {
+            totalAmount += product.getPrice();
+        }
+
+        cart.setTotalAmount(totalAmount);
+
         return cartMapper.toCartResource(cartRepository.save(cart));
     }
 
@@ -64,8 +72,14 @@ public class CartServiceImpl implements CartService {
             productList.add(existingProduct);
         }
 
+        double totalAmount = 0;
+
+        for (Product product : productList) {
+            totalAmount += product.getPrice();
+        }
+
         cart.setProducts(productList);
-        cart.setTotalAmount(cartResource.getTotalAmount());
+        cart.setTotalAmount(totalAmount);
 
         return cartMapper.toCartResource(cartRepository.save(cart));
     }

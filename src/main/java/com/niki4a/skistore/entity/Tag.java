@@ -29,7 +29,10 @@ public class Tag {
         product.getTags().add(this);
     }
 
-
+    public void removeProduct(Product product) {
+        this.products.remove(product);
+        product.getTags().remove(this);
+    }
 
 
     // getters and setters

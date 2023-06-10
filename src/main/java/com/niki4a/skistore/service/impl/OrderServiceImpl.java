@@ -21,56 +21,53 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
-
-    @Autowired
-    private final OrderMapper ORDER_MAPPER;
+    private final OrderMapper orderMapper;
 
     @Override
     public List<OrderResource> findAll() {
-        return ORDER_MAPPER.fromCustomerOrderList(orderRepository.findAll());
+        return orderMapper.fromCustomerOrderList(orderRepository.findAll());
     }
 
     @Override
     public OrderResource findById(Long id) {
-        return ORDER_MAPPER.fromCustomerOrder(orderRepository.findByOrderId(id));
+        CustomerOrder order = orderRepository.findByOrderId(id).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        return orderMapper.fromCustomerOrder(order);
     }
 
     @Override
     public OrderResource save(OrderResource orderResource) {
-        CustomerOrder order = ORDER_MAPPER.toCustomerOrder(orderResource);
+        CustomerOrder order = orderMapper.toCustomerOrder(orderResource);
 
-        cartRepository.findById(orderResource.getCart().getCartId()).ifPresentOrElse(
-                order::setCart,
-                () -> {
+        cartRepository.findById(orderResource.getCart().getCartId())
+                .ifPresentOrElse(order::setCart, () -> {
                     throw new IllegalArgumentException("Cart not found");
                 });
 
-        userRepository.findByUsername(orderResource.getUser()).ifPresentOrElse(
-                order::setUser,
-                () -> {
+        userRepository.findByUsername(orderResource.getUser())
+                .ifPresentOrElse(order::setUser, () -> {
                     throw new IllegalArgumentException("User not found");
                 });
 
-        userRepository.findByUsername(orderResource.getUser()).get().getOrders().add(order);
-
-        return ORDER_MAPPER.fromCustomerOrder(orderRepository.save(order));
+        return orderMapper.fromCustomerOrder(orderRepository.save(order));
     }
 
     @Override
     public OrderResource update(OrderResource orderResource, Long id) {
-        CustomerOrder order = orderRepository.findByOrderId(id);
+        CustomerOrder order = orderRepository.findByOrderId(id).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
         order.setOrderDate(orderResource.getOrderDate());
-        userRepository.findByUsername(orderResource.getUser()).ifPresentOrElse(
-                order::setUser,
-                () -> {
+
+        userRepository.findByUsername(orderResource.getUser())
+                .ifPresentOrElse(order::setUser, () -> {
                     throw new IllegalArgumentException("User not found");
                 });
-        cartRepository.findById(orderResource.getCart().getCartId()).ifPresentOrElse(
-                order::setCart,
-                () -> {
+
+        cartRepository.findById(orderResource.getCart().getCartId())
+                .ifPresentOrElse(order::setCart, () -> {
                     throw new IllegalArgumentException("Cart not found");
                 });
-        return ORDER_MAPPER.fromCustomerOrder(orderRepository.save(order));
+
+        return orderMapper.fromCustomerOrder(orderRepository.save(order));
     }
 
     @Override
@@ -81,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<OrderResource> findByUser(String username) {
-        return Optional.ofNullable(ORDER_MAPPER.fromCustomerOrder(orderRepository.findByUserUsername(username).get()));
+        return orderRepository.findByUserUsername(username)
+                .map(orderMapper::fromCustomerOrder);
     }
 }

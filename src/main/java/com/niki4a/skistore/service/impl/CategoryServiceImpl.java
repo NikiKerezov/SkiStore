@@ -13,53 +13,56 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
-
-    @Autowired
-    private final CategoryMapper CATEGORY_MAPPER;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public List<CategoryResource> findAll() {
-        return CATEGORY_MAPPER.toCategoryResourceList(categoryRepository.findAll());
+        return categoryMapper.toCategoryResourceList(categoryRepository.findAll());
     }
 
     @Override
     public CategoryResource findById(Long id) {
-        return CATEGORY_MAPPER.toCategoryResource(categoryRepository.findByCategoryId(id));
+        Category category = categoryRepository.findByCategoryId(id).orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        return categoryMapper.toCategoryResource(category);
     }
 
     @Override
     public CategoryResource save(CategoryResource categoryResource) {
-        Category category = CATEGORY_MAPPER.fromCategoryResource(categoryResource);
-
         if (categoryRepository.findByCategoryName(categoryResource.getCategoryName()).isPresent()) {
             throw new IllegalArgumentException("Category already exists");
         }
 
-        category.setProducts(null);
-        return CATEGORY_MAPPER.toCategoryResource(categoryRepository.save(category));
+        Category category = categoryMapper.fromCategoryResource(categoryResource);
+        category.setProducts(new HashSet<>());
+
+        return categoryMapper.toCategoryResource(categoryRepository.save(category));
     }
 
     @Override
     public CategoryResource update(CategoryResource categoryResource, Long id) {
-        Category category = categoryRepository.findByCategoryId(id);
+        Category category = categoryRepository.findByCategoryId(id).orElseThrow(() -> new IllegalArgumentException("Category not found"));
+
         category.setCategoryName(categoryResource.getCategoryName());
+
         Set<Product> productList = new HashSet<>();
         for (ProductResource product : categoryResource.getProducts()) {
-            productRepository.findByProductName(product.getProductName()).ifPresentOrElse(
-                    category::addProduct,
-                    () -> {
-                        throw new IllegalArgumentException("Product not found");
-                    });
+            Product existingProduct = productRepository.findByProductName(product.getProductName())
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+            productList.add(existingProduct);
         }
-        return CATEGORY_MAPPER.toCategoryResource(categoryRepository.save(category));
+        category.setProducts(productList);
+
+        return categoryMapper.toCategoryResource(categoryRepository.save(category));
     }
 
     @Override
@@ -70,6 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryResource> findByCategoryName(String categoryName) {
-        return Optional.ofNullable(CATEGORY_MAPPER.toCategoryResource(categoryRepository.findByCategoryName(categoryName).get()));
+        return categoryRepository.findByCategoryName(categoryName)
+                .map(categoryMapper::toCategoryResource);
     }
 }

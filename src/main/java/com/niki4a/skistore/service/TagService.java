@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface TagService {
     List<TagResource> findAll();
-    TagResource findById(Long id);
+    Optional<TagResource> findById(Long id);
     TagResource save(TagResource tagResource);
     TagResource update(TagResource tagResource, Long id);
     void delete(Long id);

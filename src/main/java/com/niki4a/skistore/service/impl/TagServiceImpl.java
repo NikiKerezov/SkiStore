@@ -2,6 +2,7 @@ package com.niki4a.skistore.service.impl;
 
 import com.niki4a.skistore.controller.resources.ProductResource;
 import com.niki4a.skistore.controller.resources.TagResource;
+import com.niki4a.skistore.entity.Product;
 import com.niki4a.skistore.entity.Tag;
 import com.niki4a.skistore.mapper.TagMapper;
 import com.niki4a.skistore.repository.ProductRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,59 +22,54 @@ import java.util.Optional;
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final ProductRepository productRepository;
-
-    @Autowired
-    private final TagMapper TAG_MAPPER;
+    private final TagMapper tagMapper;
 
     @Override
     public List<TagResource> findAll() {
-        return TAG_MAPPER.toTagResourceList(tagRepository.findAll());
+        return tagMapper.toTagResourceList(tagRepository.findAll());
     }
 
     @Override
-    public TagResource findById(Long id) {
-        return TAG_MAPPER.toTagResource(tagRepository.findByTagId(id));
+    public Optional<TagResource> findById(Long id) {
+        Tag tag = tagRepository.findByTagId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tag not found"));
+        return Optional.of(tagMapper.toTagResource(tag));
     }
 
     @Override
     public TagResource save(TagResource tagResource) {
-        Tag tag = TAG_MAPPER.fromTagResource(tagResource);
+        Tag tag = tagMapper.fromTagResource(tagResource);
         tag.setProducts(null);
-        return TAG_MAPPER.toTagResource(tagRepository.save(tag));
+        return tagMapper.toTagResource(tagRepository.save(tag));
     }
 
     @Override
     public TagResource update(TagResource tagResource, Long id) {
-        Tag tag = tagRepository.findByTagId(id);
+        Tag tag = tagRepository.findByTagId(id).orElseThrow(() -> new IllegalArgumentException("Tag not found"));
+
         tag.setTagName(tagResource.getTagName());
 
         for (ProductResource productResource : tagResource.getProducts()) {
-            productRepository.findByProductName(productResource.getProductName()).ifPresentOrElse(
-                    tag::addProduct,
-                    () -> {
-                        throw new IllegalArgumentException("Product not found");
-                    });
+            Product existingProduct = productRepository.findByProductName(productResource.getProductName())
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+            tag.addProduct(existingProduct);
         }
 
-        return TAG_MAPPER.toTagResource(tagRepository.save(tag));
+        return tagMapper.toTagResource(tagRepository.save(tag));
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        /*
-        productRepository.findByProductName(tagRepository.findByTagId(id).getTagName()).ifPresent(
-                product -> {
-                    product.removeTag(tagRepository.findByTagId(id));
-                }
-        );
-
-         */
-        tagRepository.deleteByTagId(id);
+        Tag tag = tagRepository.findByTagId(id).orElseThrow(() -> new IllegalArgumentException("Tag not found"));
+        tag.getProducts().forEach(product -> product.removeTag(tag));
+        tag.setProducts(new HashSet<>());
+        tagRepository.delete(tag);
     }
 
     @Override
     public Optional<TagResource> findByName(String name) {
-        return Optional.ofNullable(TAG_MAPPER.toTagResource(tagRepository.findByTagName(name).get()));
+        return tagRepository.findByTagName(name)
+                .map(tagMapper::toTagResource);
     }
 }

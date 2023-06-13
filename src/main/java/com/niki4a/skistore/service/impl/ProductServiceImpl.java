@@ -11,15 +11,15 @@ import com.niki4a.skistore.repository.ProductRepository;
 import com.niki4a.skistore.repository.TagRepository;
 import com.niki4a.skistore.service.CategoryService;
 import com.niki4a.skistore.service.ProductService;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
     private final TagRepository tagRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Override
     public List<ProductResource> findAll() {
@@ -101,4 +102,20 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByProductName(productName)
                 .map(productMapper::toProductResource);
     }
+
+    @Override
+    public List<ProductResource> findAllAudits(Long id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManagerFactory.createEntityManager());
+        List<Number> revisions = auditReader.getRevisions(Product.class, id);
+        List<ProductResource> productResourceList = new ArrayList<>();
+
+        for (Number revision : revisions) {
+            Product product = auditReader.find(Product.class, id, revision);
+            productResourceList.add(productMapper.toProductResource(product));
+        }
+
+        return productResourceList;
+    }
+
+
 }

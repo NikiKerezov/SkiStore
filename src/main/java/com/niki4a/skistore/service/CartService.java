@@ -11,4 +11,5 @@ public interface CartService {
     CartResource save(CartResource cartResource);
     CartResource update(CartResource cartResource, Long id);
     void delete(Long id);
+    List<CartResource> findAllAudits(Long id);
 }

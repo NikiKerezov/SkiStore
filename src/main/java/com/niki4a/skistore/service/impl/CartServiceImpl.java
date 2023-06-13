@@ -9,11 +9,14 @@ import com.niki4a.skistore.mapper.ProductMapper;
 import com.niki4a.skistore.repository.CartRepository;
 import com.niki4a.skistore.repository.ProductRepository;
 import com.niki4a.skistore.service.CartService;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +27,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final CartMapper cartMapper;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Override
     public List<CartResource> findAll() {
@@ -88,5 +92,19 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public void delete(Long id) {
         cartRepository.deleteByCartId(id);
+    }
+
+    @Override
+    public List<CartResource> findAllAudits(Long id) {
+        AuditReader auditReader = org.hibernate.envers.AuditReaderFactory.get(entityManagerFactory.createEntityManager());
+        List<Number> revisions = auditReader.getRevisions(Cart.class, id);
+        List<CartResource> cartResourceList = new ArrayList<>();
+
+        for (Number revision : revisions) {
+            Cart cart = auditReader.find(Cart.class, id, revision);
+            cartResourceList.add(cartMapper.toCartResource(cart));
+        }
+
+        return cartResourceList;
     }
 }

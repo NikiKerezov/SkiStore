@@ -14,4 +14,6 @@ public interface OrderService {
     void delete(Long id);
 
     Optional<OrderResource> findByUser(String username);
+
+    List<OrderResource> findAllAudits(Long id);
 }

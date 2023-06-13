@@ -8,15 +8,15 @@ import com.niki4a.skistore.mapper.UserMapper;
 import com.niki4a.skistore.repository.OrderRepository;
 import com.niki4a.skistore.repository.UserRepository;
 import com.niki4a.skistore.service.UserService;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
-
     private final UserMapper userMapper;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Override
     public List<UserResource> findAll() {
@@ -86,5 +86,19 @@ public class UserServiceImpl implements UserService {
     public Optional<UserResource> findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(userMapper::toUserResource);
+    }
+
+    @Override
+    public List<UserResource> findAllAudits(Long id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManagerFactory.createEntityManager());
+        List<Number> revisions = auditReader.getRevisions(User.class, id);
+        List<UserResource> userResources = new ArrayList<>();
+
+        for (Number revision : revisions) {
+            User user = auditReader.find(User.class, id, revision);
+            userResources.add(userMapper.toUserResource(user));
+        }
+
+        return userResources;
     }
 }

@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.*;
 
@@ -14,6 +17,7 @@ import java.util.*;
 @Getter
 @Setter
 @ToString
+@Audited
 public class Product {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -24,16 +28,35 @@ public class Product {
     private double price;
     private int quantityInStock;
 
+    @NotAudited
     @ManyToOne
     @JoinColumn(name = "categoryId")
     private Category category;
 
+    @NotAudited
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "product_tag",
             joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "tagId"))
     private Set<Tag> tags;
+
+    public Set<Tag> getTags() {
+        if (tags == null) {
+            tags = new HashSet<>();
+        }
+        return tags;
+    }
+
+    @CreatedDate
+    private Date createdDate;
+
+    @PrePersist
+    @PreUpdate
+    @PreRemove
+    public void preAnyAction() {
+        createdDate = new Date();
+    }
 
     public void addTag(Tag tag) {
         this.tags.add(tag);

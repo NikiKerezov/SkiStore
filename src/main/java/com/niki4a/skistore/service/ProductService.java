@@ -13,4 +13,6 @@ public interface ProductService {
     void delete(Long id);
 
     Optional<ProductResource> findByProductName(String username);
+
+    List<ProductResource> findAllAudits(Long id);
 }

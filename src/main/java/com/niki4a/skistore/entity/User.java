@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,19 +17,29 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@Audited
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long userId;
-
     private String username;
     private String password;
     private String email;
     private String address;
     private String corporationName;
 
+    @CreatedDate
+    private Date createdDate;
+
     @OneToMany(mappedBy = "user")
     private Set<CustomerOrder> orders;
+
+    @PrePersist
+    @PreUpdate
+    @PreRemove
+    public void preAnyAction() {
+        createdDate = new Date();
+    }
 
     public void addOrder(CustomerOrder order) {
         orders.add(order);

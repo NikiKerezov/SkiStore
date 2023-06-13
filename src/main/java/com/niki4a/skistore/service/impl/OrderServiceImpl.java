@@ -7,11 +7,15 @@ import com.niki4a.skistore.repository.CartRepository;
 import com.niki4a.skistore.repository.OrderRepository;
 import com.niki4a.skistore.repository.UserRepository;
 import com.niki4a.skistore.service.OrderService;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.Audited;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
     private final OrderMapper orderMapper;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Override
     public List<OrderResource> findAll() {
@@ -80,5 +85,19 @@ public class OrderServiceImpl implements OrderService {
     public Optional<OrderResource> findByUser(String username) {
         return orderRepository.findByUserUsername(username)
                 .map(orderMapper::fromCustomerOrder);
+    }
+
+    @Override
+    public List<OrderResource> findAllAudits(Long id) {
+        AuditReader auditReader = org.hibernate.envers.AuditReaderFactory.get(entityManagerFactory.createEntityManager());
+        List<Number> revisions = auditReader.getRevisions(CustomerOrder.class, id);
+        List<OrderResource> orderResourceList = new ArrayList<>();
+
+        for (Number revision : revisions) {
+            CustomerOrder order = auditReader.find(CustomerOrder.class, id, revision);
+            orderResourceList.add(orderMapper.fromCustomerOrder(order));
+        }
+
+        return orderResourceList;
     }
 }

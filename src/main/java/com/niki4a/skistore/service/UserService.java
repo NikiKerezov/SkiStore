@@ -13,4 +13,6 @@ public interface UserService {
     void delete(Long id);
 
     Optional<UserResource> findByUsername(String username);
+
+    List<UserResource> findAllAudits(Long id);
 }

@@ -44,4 +44,9 @@ public class ProductController {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/audits/{id}")
+    public ResponseEntity<?> findAllAudits(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findAllAudits(id));
+    }
 }

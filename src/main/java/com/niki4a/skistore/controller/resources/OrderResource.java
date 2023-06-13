@@ -10,4 +10,5 @@ public class OrderResource {
     private CartResource cart;
     private String user;
     private Date orderDate;
+    private Date createdDate;
 }

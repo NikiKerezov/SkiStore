@@ -44,4 +44,9 @@ public class CartController {
         cartService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/audits/{id}")
+    public ResponseEntity<?> findAllAudits(@PathVariable Long id) {
+        return ResponseEntity.ok(cartService.findAllAudits(id));
+    }
 }

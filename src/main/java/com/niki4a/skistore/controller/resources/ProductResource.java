@@ -2,6 +2,7 @@ package com.niki4a.skistore.controller.resources;
 
 import lombok.Data;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ public class ProductResource {
     private int quantityInStock;
     private String category;
     private Set<String> tags;
+    private Date createdDate;
 
     public Set<String> getTags() {
         if (tags == null) {

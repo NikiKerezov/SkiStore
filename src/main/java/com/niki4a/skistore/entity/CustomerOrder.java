@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
@@ -14,6 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@Audited
 public class CustomerOrder {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -27,6 +30,16 @@ public class CustomerOrder {
     private User user;
 
     private Date orderDate;
+
+    @CreatedDate
+    Date createdDate;
+
+    @PrePersist
+    @PreUpdate
+    @PreRemove
+    public void preAnyAction() {
+        createdDate = new Date();
+    }
 
     @Override
     public int hashCode() {
